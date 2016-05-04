@@ -1,14 +1,17 @@
 <?php
-	/**
-		*  @Description:  Creating Database Class 
-	*/	
-	class DB
+	//include DB
+	//require_once ('dbClass.php');
+	/*
+	* Creating Class for address-book called addBookClass
+	*/
+	
+	class addBookClass
 	{
-		private $host;						//Database hostname
-		private $user;						//Database username
-		private $password;					//Database password
-		private $db;						//Database name
-		private $dbcon;						//For creating a connection
+		var $host;						//Database hostname
+		var $user;						//Database username
+		var $pass;						//Database password
+		var $db;						//Database name
+		var $dbcon;						//For creating a connection
 		
 		
 		/**
@@ -23,17 +26,24 @@
 			*  
 			*  @details Details
 		*/
-		function __construct($host,$user,$pass,$data) {
+		function __construct($host,$user,$pass,$db) {
 			
 			$this->host     = $host;
 			$this->user     = $user;
 			$this->pass     = $pass;
-			$this->data     = $data;
-			$this->dbcon 	= new mysqli($this->host, $this->user, $this->pass, $this->data);
-			
+			$this->db    	= $db;
+			$this->dbcon 	= new mysqli($this->host, $this->user, $this->pass, $this->db);
+
 			return $this->installDB(); //Installs the db
+			
 		}
-		
+
+	
+		public function proccessSql($query)
+		{
+			return $this->dbcon->query($query);
+		}
+
 		/**
 		 *  @brief Brief		
 		 *  
@@ -43,10 +53,8 @@
 		 */
 		public function installDB()
 		{
-			$dbcon = $this->dbcon;
-			if ($dbcon->connect_errno) {echo "Failed to connect to MySQL: " . $dbcon->connect_error;}
-			
-			$result = $dbcon->query("SHOW COLUMNS FROM addbook"); 
+						
+			$result = $this->dbcon->query("SHOW COLUMNS FROM addbook"); 
 			
 			if(!$result || $result->num_rows<= 0)
 			{
@@ -58,11 +66,9 @@
 				"PRIMARY KEY  (`id`)".
 				") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 
-				return $dbcon->query($qry); 
+				return $this->dbcon->query($qry); 
 				
 			}
-			$dbcon->close();
 		}
-	}
-
-?>
+		
+	}	

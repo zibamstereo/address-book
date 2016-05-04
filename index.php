@@ -17,12 +17,12 @@
 
   <body>
 <?php 
-require_once ('dbClass.php');
-include_once('addBookClass.php');
-if (isset($_REQUEST) && !empty($_REQUEST))
+require_once "resources/addBookClass.php";
+$add = new addBookClass("localhost","root","","addbook");
+if (!isset($_REQUEST['search']) && !empty($_REQUEST))
 {
 	$sql = "INSERT INTO addbook (name,email,phone) VALUES ('".$_REQUEST['name']."','".$_REQUEST['email']."','".$_REQUEST['phone']."')";
-	processSql($sql);
+	$add->proccessSql($sql);
 }
 ?>
     <div class="address-book">
@@ -35,7 +35,7 @@ if (isset($_REQUEST) && !empty($_REQUEST))
   <div class="form">
 
     <form class="search-form">
-      <input type="text" placeholder="Search"/><span class="form-icon"> <i class="fa fa-search"> </i></span>
+      <input type="text" placeholder="Search" name='search'/><span class="form-icon"> <i class="fa fa-search"> </i></span>
      </br>
       <button>Search</button>
       <p class="message">  Add a Record ? <span class="change">  <i class="fa fa-chevron-circle-right"></i> Enter</span></p>
