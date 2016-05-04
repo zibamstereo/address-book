@@ -16,7 +16,15 @@
   </head>
 
   <body>
-
+<?php 
+require_once ('dbClass.php');
+include_once('addBookClass.php');
+if (isset($_REQUEST) && !empty($_REQUEST))
+{
+	$sql = "INSERT INTO addbook (name,email,phone) VALUES ('".$_REQUEST['name']."','".$_REQUEST['email']."','".$_REQUEST['phone']."')";
+	processSql($sql);
+}
+?>
     <div class="address-book">
 
 <div class="address-book-header">
@@ -34,7 +42,7 @@
     </form>
 
 
-    <form class="address-form">
+    <form class="address-form" action="index.php">
      <input type="text" name="name" placeholder="Name"/><span class="form-icon"> <i class="fa fa-user"> </i></span>
       <input type="text" name="phone" placeholder="Phone"/><span class="form-icon"> <i class="fa fa-mobile-phone"> </i></span>
       <input type="text" name="email" placeholder="Email"/><span class="form-icon"> <i class="fa fa-envelope-o"> </i></span>
