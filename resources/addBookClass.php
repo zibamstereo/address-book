@@ -41,7 +41,8 @@
 	
 		public function proccessSql($query)
 		{
-			return $this->dbcon->query($query);
+			$res = $this->dbcon->query($query);
+			return $res ? true : false;
 		}
 
 		/**
