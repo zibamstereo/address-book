@@ -20,8 +20,16 @@
 require_once "resources/addBookClass.php";
 $add = new addBookClass("localhost","root","","addbook");
 if (!isset($_REQUEST['search']) && !empty($_REQUEST))
+	$name = !empty($_REQUEST['name']) ? $_REQUEST['name'] : "";
+	$email = !empty($_REQUEST['email']) ? $_REQUEST['email'] : "";
+	$phone = !empty($_REQUEST['phone']) ? $_REQUEST['phone'] : "";
+	$error =array();
+	$err = $error[0] = empty($name) ? "You must enter your name" : "";
+	$err = $error[1] = empty($email) ? "You must enter your email" : "";
+	$err = $error[2] = empty($phone) ? "You must enter your phone" : "";
+	if (empty($err)):
 {
-	$sql = "INSERT INTO addbook (name,email,phone) VALUES ('".$_REQUEST['name']."','".$_REQUEST['email']."','".$_REQUEST['phone']."')";
+	$sql = "INSERT INTO addbook (name,email,phone) VALUES ('".$name."','".$email."','".$phone."')";
 	$res = $add->proccessSql($sql);
 	if($res==true)
 	{
@@ -31,6 +39,7 @@ if (!isset($_REQUEST['search']) && !empty($_REQUEST))
 		$msg = "<div> Address Book is not succesfully submitted";
 	}
 }
+endif; 
 ?>
     <div class="address-book">
 
