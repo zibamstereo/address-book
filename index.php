@@ -17,19 +17,11 @@
 
   <body>
 <?php 
-require_once "resources/addBookClass.php";
-$add = new addBookClass("localhost","root","","addbook");
-if (!isset($_REQUEST['search']) && !empty($_REQUEST))
-	$name = !empty($_REQUEST['name']) ? $_REQUEST['name'] : "";
-	$email = !empty($_REQUEST['email']) ? $_REQUEST['email'] : "";
-	$phone = !empty($_REQUEST['phone']) ? $_REQUEST['phone'] : "";
-	$error =array();
-	$err = $error[0] = empty($name) ? "You must enter your name" : "";
-	$err = $error[1] = empty($email) ? "You must enter your email" : "";
-	$err = $error[2] = empty($phone) ? "You must enter your phone" : "";
-	if (empty($err)):
+require_once "resources/DB.inc.php";
+$add = new DB();
+if (!isset($_REQUEST['search_but']) && !empty($_REQUEST))
 {
-	$sql = "INSERT INTO addbook (name,email,phone) VALUES ('".$name."','".$email."','".$phone."')";
+	$sql = "INSERT INTO addbook (name,email,phone) VALUES ('".$_REQUEST['name']."','".$_REQUEST['email']."','".$_REQUEST['phone']."')";
 	$res = $add->proccessSql($sql);
 	if($res==true)
 	{
@@ -39,7 +31,6 @@ if (!isset($_REQUEST['search']) && !empty($_REQUEST))
 		$msg = "<div> Address Book is not succesfully submitted";
 	}
 }
-endif; 
 ?>
     <div class="address-book">
 
@@ -53,7 +44,7 @@ endif;
     <form class="search-form" action="index.php">
       <input type="text" placeholder="Search" name='search'/><span class="form-icon"> <i class="fa fa-search"> </i></span>
      </br>
-      <button name="search">Search</button>
+      <button name="search_but">Search</button>
       <p class="message">  Add a Record ? <span class="change">  <i class="fa fa-chevron-circle-right"></i> Enter</span></p>
     </form>
 
@@ -74,15 +65,21 @@ endif;
         <script src="js/index.js"></script>
 
 	<?php
-	if (isset($_REQUEST['search']))
+	if (isset($_REQUEST['search_but']))
 	{
-	$sql = "SELECT FROM addbook WHERE name ='".$_REQUEST['search']."' OR phone ='".$_REQUEST['search']."' OR email ='".$_REQUEST['search']."'";
-	$res = $add->proccessSql($sql);
-	if ($res->num_rows == 1)
-	{
-	$data = $res->fetch_array();
-	echo $data['name'];
-	}
+	$sql = "SELECT * FROM addbook WHERE name ='".$_REQUEST['search']."' OR phone ='".$_REQUEST['search']."' OR email ='".$_REQUEST['search']."'";
+	
+	$rows = $add->fetch($sql);
+	foreach ($rows AS $row):
+	echo
+	"<table width='100%' border='0'>
+	  <tr>
+		<td>".$row['name']."</td>
+		<td>".$row['email']."</td>
+		<td>".$row['phone']."</td>
+	  </tr>
+	</table>";
+	endforeach;
 	}
 	?>
     

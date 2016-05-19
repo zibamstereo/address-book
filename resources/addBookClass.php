@@ -7,11 +7,11 @@
 	
 	class addBookClass
 	{
-		var $host;						//Database hostname
-		var $user;						//Database username
-		var $pass;						//Database password
-		var $db;						//Database name
-		var $dbcon;						//For creating a connection
+		protected static $host;						//Database hostname
+		protected static $user;						//Database username
+		protected static $pass;						//Database password
+		protected static $db;						//Database name
+		protected static $dbcon;						//For creating a connection
 		
 		
 		/**
@@ -26,17 +26,31 @@
 			*  
 			*  @details Details
 		*/
-		function __construct($host,$user,$pass,$db) {
+		function __construct() {
+		
+		// Try and connect to the database
+        if(!isset($this->dbcon)):
+			// Load configuration as an array. Use the actual location of your configuration file
+            $config = parse_ini_file('dbconfig.ini');
 			
-			$this->host     = $host;
-			$this->user     = $user;
-			$this->pass     = $pass;
-			$this->db    	= $db;
+			$this->host     = $config['host'];
+			$this->user     = $config['user'];
+			$this->pass     = $config['pass'];
+			$this->db    	= $config['dbname'];
 			$this->dbcon 	= new mysqli($this->host, $this->user, $this->pass, $this->db);
+		endif;
+		
+		  // If connection was not successful, handle the error
+        if($this->dbcon === false) {
+            // Handle error - notify administrator, log to a file, show an error screen, etc.
+            return false;
+        }
 
-			return $this->installDB(); //Installs the db
+			return $this->dbcon;
+			//Installs the db
+			return $this->installDB(); 
 			
-		}
+		}		
 
 	
 		public function proccessSql($query)
@@ -71,5 +85,42 @@
 				
 			}
 		}
+		
+		    /**
+     * Fetch rows from the database (SELECT query)
+     *
+     * @param $query The query string
+     * @return bool False on failure / array Database rows on success
+     */
+    public function fetch($query) {
+        $rows = array();
+        $result = $this->proccessSql($query);
+        if($result === false) {
+            return false;
+        }
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    /**
+     * Fetch the last error from the database
+     * 
+     * @return string Database error message
+     */
+    public function error() {
+        return $this->error;
+    }
+
+    /**
+     * Quote and escape value for use in a database query
+     *
+     * @param string $value The value to be quoted and escaped
+     * @return string The quoted and escaped string
+     */
+    public function quote($value) {
+        return "'" . $this->real_escape_string($value) . "'";
+    }
 		
 	}	
