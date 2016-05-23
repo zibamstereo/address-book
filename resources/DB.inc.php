@@ -98,7 +98,7 @@ define('DATABASE', $config['dbname']);          //Database name
         if($res === false) {
             return false;
         }
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $res->fetch_assoc()) {
             $rows[] = $row;
         }
         return $rows;

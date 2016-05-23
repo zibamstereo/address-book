@@ -31,7 +31,7 @@ class addBookClass
 	 */
 	public function importDB()
 	{
-		$result = $this->db->query("SHOW COLUMNS FROM addbook"); 
+		$result = $this->proccessSql("SHOW COLUMNS FROM addbook"); 
 		
 		if(!$result || $result->num_rows<= 0)
 		{
