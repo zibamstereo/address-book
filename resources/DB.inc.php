@@ -1,7 +1,18 @@
 <?php
+    /**
+        *  @Description:  Creating Database Class 
+    */  
+
+// Load configuration as an array. Use the actual location of your configuration file
+$config = parse_ini_file('dbconfig.ini'); 
+define('SERVER', $config['host']);              //Database hostname
+define('USERNAME', $config['user']);            //Database username
+define('PASSWORD', $config['pass']);            //Database password
+define('DATABASE', $config['dbname']);          //Database name
+
 	class DB {
     // The database connection
-    protected static $connection;
+    protected static $con;
 	
 	//Use the Construct to import DB
 	function __construct() {
@@ -17,18 +28,16 @@
      */
     public function connect() {    
         // Try and connect to the database
-        if(!isset(self::$connection)) {
-            // Load configuration as an array. Use the actual location of your configuration file
-            $config = parse_ini_file('dbconfig.ini'); 
-            self::$connection = new mysqli($config['host'],$config['user'],$config['pass'],$config['dbname']);
+        if(!isset(SELF::$con)) {
+            SELF::$con = new mysqli(SERVER,USERNAME,PASSWORD,DATABASE);
         }
 
         // If connection was not successful, handle the error
-        if(self::$connection === false) {
+        if(SELF::$con === false) {
             // Handle error - notify administrator, log to a file, show an error screen, etc.
             return false;
         }
-        return self::$connection;
+        return SELF::$con;
     }
 		
 	
@@ -69,12 +78,12 @@
      */
     public function proccessSql($query) {
         // Connect to the database
-        $connection = $this->connect();
+        $con = $this->connect();
 
         // Query the database
-        $result = $connection->query($query);
+        $res = $con->query($query);
 
-        return $result;
+        return $res;
     }
 
     /**
@@ -85,8 +94,8 @@
      */
     public function fetch($query) {
         $rows = array();
-        $result = $this->proccessSql($query);
-        if($result === false) {
+        $res = $this->proccessSql($query);
+        if($res === false) {
             return false;
         }
         while ($row = $result->fetch_assoc()) {
@@ -101,8 +110,8 @@
      * @return string Database error message
      */
     public function error() {
-        $connection = $this->connect();
-        return $connection->error;
+        $con = $this->connect();
+        return $con->error;
     }
 
     /**
@@ -112,8 +121,8 @@
      * @return string The quoted and escaped string
      */
     public function quote($value) {
-        $connection = $this->connect();
-        return "'" . $connection->real_escape_string($value) . "'";
+        $con = $this->connect();
+        return "'" . $con->real_escape_string($value) . "'";
     }
 }
 ?>

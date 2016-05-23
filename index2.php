@@ -71,7 +71,7 @@ if (!isset($_REQUEST['search']) && !empty($_REQUEST))
 	$rows = $add->fetch($sql);
 	foreach ($rows AS $row):
 	echo
-	"<table width='100%' border='0'>
+	"<table width='50%' border='0'>
 	  <tr>
 		<td>".$row['name']."</td>
 		<td>".$row['email']."</td>
